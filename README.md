@@ -27,17 +27,17 @@ The MFU is an optional upgrade that allows the adapter to reach machines up to 1
 
 # Building the Setup
 
-1) Place the adapter next to the LSC, or within 16 blocks if using the MFU upgrade.
-2) Connect the adapter, computer case, screen, and glasses terminal with OC cables. They do not need to be in the same location or orientation as in the image below. Also place the keyboard next to the screen, either in front or on top.
+1) Place one adapter next to each LSC, or within 16 blocks if using MFU upgrades.
+2) Connect both adapters, the computer case, screen, and glasses terminal with OC cables. They do not need to be in the same location or orientation as in the image below. Also place the keyboard next to the screen, either in front or on top.
 3) Power everything by connecting a GregTech or AE2 cable directly to the computer case. Alternatively, use a power converter.
 4) Right-click the glasses terminal with a pair of AR glasses to link it. Equip them in a bauble slot, tinkers mask slot, or helmet slot.
 5) Shift-click all the components into the computer case and press the power button.
 6) Follow the commands on screen install --> Y --> Y (The OpenOS floppy disk is no longer needed in the computer afterwards).
 7) Install the required scripts by copying this line of code into the computer (middle-click to paste).
 
-        wget https://raw.githubusercontent.com/DylanTaylor1/GTNH-PowerDisplay/main/setup.lua && setup
+        wget https://raw.githubusercontent.com/cevirici/GTNH-PowerDisplay/main/setup.lua && setup
 
-9) Edit the config by entering edit config.lua. Change the monitor settings as needed and personalize it to your liking. Restart the computer after changing anything in the config.
+8) Edit the config by entering edit config.lua. Change the monitor settings as needed and personalize it to your liking. Restart the computer after changing anything in the config.
 
         edit config.lua
 
@@ -46,6 +46,7 @@ The MFU is an optional upgrade that allows the adapter to reach machines up to 1
 # Running the Program
 
 Launch the power display by entering 'hud'. The script runs indefinitely until manually terminated by the player pressing 'C' in the terminal. Restarting the computer also works. Maintenance issues appear above the energy bar in red text ("Has Problems!") to help them get fixed as soon as possible. The available configuration options are listed below. Restart the computer after changing anything in the config.
+- LSCs - Defines the bars in top-to-bottom order. Each entry has a display name and an optional adapter component address.
 - Resolution - Depends on monitor (ie. 1920x1080).
 - Fullscreen - Adds a vertical offset if playing on fullscreen mode.
 - GUI Scale - Depends on settings (ie. 3).
@@ -57,10 +58,24 @@ Launch the power display by entering 'hud'. The script runs indefinitely until m
 - Rate Threshold - Determines how quickly the capacity of the LSC needs to be changing to increase/decrease the amount of chevrons.
 - Metric - Determines metric or scientific notation for the current EU and maximum EU.
 - Dimension - Change the height, length, border thickness, and font size of the HUD.
+- Bar Spacing - Changes the vertical gap between LSC bars.
 - Transparency - Change the alpha values of the shapes and the text.
 - Colors - Change the colors of the energy bar, the background, the border, and the text.
 - Sleep - Seconds between updates.
 Sharing the same computer and program between multiple players is possible. Simply connect another glasses terminal for each individual player. However, the configuration settings are going to be the same for everyone. A separate computer is needed for different configurations.
+
+## Configuring Two LSCs
+
+Two `gt_machine` components are detected automatically and shown as `Left` on top and `Right` on the bottom. Each bar reads its own LSC's stored EU and maximum EU, so differently sized LSCs require no capacity configuration.
+
+Component discovery cannot determine which adapter is physically on the left. If the bars are reversed, either swap the two names in `config.lua`, or run `components` and set a unique address (a short unique prefix is enough) for each entry:
+
+    LSCs = {
+      {name = 'Left', address = '0123'},
+      {name = 'Right', address = 'abcd'},
+    },
+
+The table order controls the display order from top to bottom. Restart the computer after changing it.
 
 ## Other Helpful Commands
 

@@ -21,7 +21,7 @@ end
 if #args >= 2 then
   repo = args[2]
 else
-  repo = 'https://raw.githubusercontent.com/DylanTaylor1/GTNH-PowerDisplay/'
+  repo = 'https://raw.githubusercontent.com/cevirici/GTNH-PowerDisplay/'
 end
 
 -- INSTALL

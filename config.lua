@@ -12,6 +12,14 @@ local function loadConfig()
   showRate = true,
   showMaxEU = true,
 
+  -- LSCs are displayed in this order, from top to bottom.
+  -- Leave address empty to auto-detect. Set a unique address prefix if the
+  -- physical Left/Right assignment matters (run `components` to list them).
+  LSCs = {
+    {name = 'Left', address = ''},
+    {name = 'Right', address = ''},
+  },
+
   -- Enable wireless mode
   wirelessMode = false,
   -- Set the maximum value to reach 100%
@@ -27,6 +35,7 @@ local function loadConfig()
   length = 168,
   borderBottom = 2,
   borderTop = 2,
+  barSpacing = 4,
   fontSize = 3,
 
   -- Transparency
