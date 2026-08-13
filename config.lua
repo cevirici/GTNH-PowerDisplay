@@ -16,8 +16,8 @@ local function loadConfig()
   -- Leave address empty to auto-detect. Set a unique address prefix if the
   -- physical Left/Right assignment matters (run `components` to list them).
   LSCs = {
-    {name = 'Left', address = ''},
-    {name = 'Right', address = ''},
+    {name = 'Left', address = '', color = colors.electricBlue},
+    {name = 'Right', address = '', color = colors.orange},
   },
 
   -- Enable wireless mode
@@ -35,7 +35,8 @@ local function loadConfig()
   length = 168,
   borderBottom = 2,
   borderTop = 2,
-  barSpacing = 4,
+  -- Vertical pixels between bars (0 makes them directly adjacent)
+  barSpacing = 0,
   fontSize = 3,
 
   -- Transparency

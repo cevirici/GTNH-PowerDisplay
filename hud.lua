@@ -4,6 +4,10 @@ local events    = require('events')
 local component = require('component')
 local term      = require('term')
 local glasses   = {}
+local lscConfigs = config.LSCs or {
+  {name = 'Left', address = '', color = config.primaryColor},
+  {name = 'Right', address = '', color = 0xFFA500},
+}
 
 local function resolveLSCs()
   local available = {}
@@ -17,17 +21,17 @@ local function resolveLSCs()
   end
   table.sort(available)
 
-  if #available < #config.LSCs then
+  if #available < #lscConfigs then
     error(string.format(
       'Found %d gt_machine component(s), but config.lua defines %d LSC(s). Check both adapters and cables.',
       #available,
-      #config.LSCs
+      #lscConfigs
     ))
   end
 
   -- Reserve explicitly configured components first. This prevents an
   -- auto-detected entry from taking a component requested by a later entry.
-  for index, lscConfig in ipairs(config.LSCs) do
+  for index, lscConfig in ipairs(lscConfigs) do
     if lscConfig.address and lscConfig.address ~= '' then
       local address = component.get(lscConfig.address, 'gt_machine')
       if not address or not availableSet[address] then
@@ -46,7 +50,7 @@ local function resolveLSCs()
     end
   end
 
-  for index in ipairs(config.LSCs) do
+  for index in ipairs(lscConfigs) do
     if not resolved[index] then
       for _, address in ipairs(available) do
         if not used[address] then
@@ -59,9 +63,10 @@ local function resolveLSCs()
   end
 
   local lscs = {}
-  for index, lscConfig in ipairs(config.LSCs) do
+  for index, lscConfig in ipairs(lscConfigs) do
     table.insert(lscs, {
       name = lscConfig.name or ('LSC ' .. index),
+      color = lscConfig.color or config.primaryColor,
       address = resolved[index],
       machine = component.proxy(resolved[index]),
       lastPercentage = nil,
@@ -153,7 +158,7 @@ local h = config.height
 local b1 = config.borderBottom
 local b2 = config.borderTop
 local bottomY = config.resolution[2] / config.GUIscale
-local rowPitch = h + b1 + b2 + 3 * config.fontSize + config.barSpacing
+local rowPitch = h + b1 + b2 + (config.barSpacing or 0)
 
 if not config.fullscreen then
   bottomY = bottomY - graphics.calcOffset(config.GUIscale)
@@ -173,11 +178,11 @@ for i = 1, #glasses do
     graphics.quad(glasses[i], {3.5*h, y-b1}, {3.5*h+l, y-b1}, {2.5*h+l, y-b1-h}, {2.5*h, y-b1-h}, config.secondaryColor)
 
     -- Draw Energy Bar
-    bar.energyBar = graphics.quad(glasses[i], {b2+3.25*h, y-b1}, {b2+3.25*h, y-b1}, {b2+2.25*h, y-b1-h}, {b2+2.25*h, y-b1-h}, config.primaryColor)
-    bar.textPercent = graphics.text(glasses[i], 'X.X%', {0.5*h, y-b1-h/1.8-config.fontSize}, config.fontSize, config.primaryColor)
+    bar.energyBar = graphics.quad(glasses[i], {b2+3.25*h, y-b1}, {b2+3.25*h, y-b1}, {b2+2.25*h, y-b1-h}, {b2+2.25*h, y-b1-h}, lsc.color)
+    bar.textPercent = graphics.text(glasses[i], 'X.X%', {0.5*h, y-b1-h/1.8-config.fontSize}, config.fontSize, lsc.color)
     bar.textCurr = graphics.text(glasses[i], lsc.name, {b2+3.25*h+1, y-b1-h/2-config.fontSize}, config.fontSize/1.3, config.textColor)
     bar.textMax = graphics.text(glasses[i], '', {-2.25*h+l, y-b1-h/2-config.fontSize}, config.fontSize/1.3, config.textColor)
-    bar.textMaintenance = graphics.text(glasses[i], '', {b2, y-b1-b2-h-3*config.fontSize}, config.fontSize, config.issueColor)
+    bar.textMaintenance = graphics.text(glasses[i], '', {b2+3.25*h+1, y-b1-h/2-config.fontSize}, config.fontSize/1.3, config.issueColor)
     bar.y = y
 
     glasses[i].bars[lscIndex] = bar
@@ -213,15 +218,16 @@ while true do
         bar.textPercent.setPosition(b2+2*h-2*config.fontSize*(#bar.textPercent.getText()-1), y-b1-h/1.8-config.fontSize)
       end
 
-      bar.textCurr.setText(currentLabel(lsc, reading))
       bar.textMax.setText(reading.capacityText)
       if reading.capacityText ~= '' then
         bar.textMax.setPosition(2.25*h+l-1.5*config.fontSize*(#reading.capacityText-1), y-b1-h/2-config.fontSize)
       end
 
       if reading.hasProblems then
-        bar.textMaintenance.setText(lsc.name .. ' Has Problems!')
+        bar.textCurr.setText('')
+        bar.textMaintenance.setText(lsc.name .. ': Has Problems!')
       else
+        bar.textCurr.setText(currentLabel(lsc, reading))
         bar.textMaintenance.setText('')
       end
     end

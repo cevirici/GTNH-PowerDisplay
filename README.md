@@ -46,7 +46,7 @@ The MFU is an optional upgrade that allows the adapter to reach machines up to 1
 # Running the Program
 
 Launch the power display by entering 'hud'. The script runs indefinitely until manually terminated by the player pressing 'C' in the terminal. Restarting the computer also works. Maintenance issues appear above the energy bar in red text ("Has Problems!") to help them get fixed as soon as possible. The available configuration options are listed below. Restart the computer after changing anything in the config.
-- LSCs - Defines the bars in top-to-bottom order. Each entry has a display name and an optional adapter component address.
+- LSCs - Defines the bars in top-to-bottom order. Each entry has a display name, an optional adapter component address, and its own fill color.
 - Resolution - Depends on monitor (ie. 1920x1080).
 - Fullscreen - Adds a vertical offset if playing on fullscreen mode.
 - GUI Scale - Depends on settings (ie. 3).
@@ -58,7 +58,7 @@ Launch the power display by entering 'hud'. The script runs indefinitely until m
 - Rate Threshold - Determines how quickly the capacity of the LSC needs to be changing to increase/decrease the amount of chevrons.
 - Metric - Determines metric or scientific notation for the current EU and maximum EU.
 - Dimension - Change the height, length, border thickness, and font size of the HUD.
-- Bar Spacing - Changes the vertical gap between LSC bars.
+- Bar Spacing - Changes the vertical gap between LSC bars. Set it to `0` to make them directly adjacent.
 - Transparency - Change the alpha values of the shapes and the text.
 - Colors - Change the colors of the energy bar, the background, the border, and the text.
 - Sleep - Seconds between updates.
@@ -71,8 +71,8 @@ Two `gt_machine` components are detected automatically and shown as `Left` on to
 Component discovery cannot determine which adapter is physically on the left. If the bars are reversed, either swap the two names in `config.lua`, or run `components` and set a unique address (a short unique prefix is enough) for each entry:
 
     LSCs = {
-      {name = 'Left', address = '0123'},
-      {name = 'Right', address = 'abcd'},
+      {name = 'Left', address = '0123', color = colors.electricBlue},
+      {name = 'Right', address = 'abcd', color = colors.orange},
     },
 
 The table order controls the display order from top to bottom. Restart the computer after changing it.
