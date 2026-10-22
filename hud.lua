@@ -210,12 +210,15 @@ while true do
       bar.energyBar.setVertex(2, b2+3.25*h+l*percentage, y-b1)
       bar.energyBar.setVertex(3, b2+2.25*h+l*percentage, y-b1-h)
 
+      -- Keep the label locally: some glasses connections return nil from getText().
+      local percentText = percentage > 0.999
+        and '100%'
+        or string.format('%.1f%%', percentage*100)
+      bar.textPercent.setText(percentText)
       if percentage > 0.999 then
-        bar.textPercent.setText('100%')
-        bar.textPercent.setPosition(b2+2.1*h-2*config.fontSize*(#bar.textPercent.getText()), y-b1-h/1.8-config.fontSize)
+        bar.textPercent.setPosition(b2+2.1*h-2*config.fontSize*#percentText, y-b1-h/1.8-config.fontSize)
       else
-        bar.textPercent.setText(string.format('%.1f%%', percentage*100))
-        bar.textPercent.setPosition(b2+2*h-2*config.fontSize*(#bar.textPercent.getText()-1), y-b1-h/1.8-config.fontSize)
+        bar.textPercent.setPosition(b2+2*h-2*config.fontSize*(#percentText-1), y-b1-h/1.8-config.fontSize)
       end
 
       bar.textMax.setText(reading.capacityText)
